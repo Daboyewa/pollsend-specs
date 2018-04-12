@@ -4,68 +4,37 @@ var chai = require('chai'),
     Promise = require('bluebird'),
     request = require('superagent-promise')(require('superagent'), Promise),
     chaiAsPromised = require('chai-as-promised');
-chai.use(chaiAsPromised);
+    chai.use(chaiAsPromised);
+var expect = require('chai').expect;
+var request = require('request');
 var url = process.env.URL || 'http://localhost:8000/polls';
+"use strict";
+describe('Math', function() {  
+    describe('#abs()', function() {
+        it('should return positive value of given negative number', function() {
+            expect(Math.abs(-5)).to.be.equal(5);
+        });
 
-// First test
+        it('should return positive value of given positive number', function() {
+            expect(Math.abs(3)).to.be.equal(3);
+        });
 
-describe('Cross Origin Request', function(){
-  var result;
+        it('should return 0 given 0', function() {
+            expect(Math.abs(0)).to.be.equal(0);
+        });
+    });
 
-  before(function() {
-    result = request('OPTIONS', url)
-      .set('Origin', 'http://someplace.com')
-      .end();
-  });
+    describe('#sqrt()', function() {
+        it('should return the square root of a given positive number', function() {
+            expect(Math.sqrt(25)).to.be.equal(5);
+        });
 
-  it('should return the correct CORS headers', function() {
-    return assert(result, "header").to.contain.all.keys([
-      'access-control-allow-origin',
-      'access-control-allow-methods',
-      'access-control-allow-headers'
-    ]);
-  });
-  
-  it('should allow all origins', function() {
-   return assert(result, "header.access-control-allow-origin").to.equal('*');
-  });
+        it('should return NaN for a given negative number', function() {
+            expect(Math.sqrt(-9)).to.be.NaN;
+        });
+
+        it('should return 0 given 0', function() {
+            expect(Math.sqrt(0)).to.be.equal(0);
+        });
+    });
 });
-
-/*
- *Convienience Functions
- */
-
-// POST request with data and return promise
-function post(url, data) {
-  return request.post(url)
-    .set('Content-Type', 'application/json')
-    .set('Accept', 'application/json')
-    .send(data)
-    .end();
-}
-
-// GET request  and return promise
-function get(url) {
-  return request.get(url)
-    .set('Accept', 'application/json')
-    .end();
-}
-
-// DELETE request and return promise
-function del(url) {
-  return request.del(url).end();
-}
-
-// UPDATE request with data and return promise
-function update(url, method, data) {
-  return request(method, url)
-    .set('Content-Type', 'application/json')
-    .set('Accept', 'application/json')
-    .send(data)
-    .end();
-}
-
-// Resolve promise for property and return expectation
-function assert(result, prop) {
-  return expect(result).to.eventually.have.deep.property(prop)
-}
